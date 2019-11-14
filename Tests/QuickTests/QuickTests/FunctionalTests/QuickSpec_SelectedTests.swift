@@ -28,7 +28,21 @@ class SimulateAllTests_TestCase: QuickSpec {
     }
 }
 
+class SimulateNotQuickSpec_TestCase: XCTestCase {
+    func testAnyTestExists() {
+
+    }
+
+    func testDifferentTestCase() {
+
+    }
+}
+
 class QuickSpec_SelectedTests: XCTestCase {
+    override func setUp() {
+        super.setUp()
+        QuickTestSuite.clearBuiltTestSuites()
+    }
 
     func testQuickSpecTestInvocationsForAllTests() {
         // Simulate running 'All tests'
@@ -49,18 +63,25 @@ class QuickSpec_SelectedTests: XCTestCase {
     }
 
     func testQuickSpecRequestingNoTestCase() {
-        QuickTestSuite.reset()
-
         let suite = XCTestSuite(forTestCaseWithName: "SimulateSelectedTests_TestCase")
         expect(suite.tests).to(haveCount(3))
     }
 
     func testQuickSpecRequestingOneTestCase() {
-        QuickTestSuite.reset()
-
         let suite = XCTestSuite(forTestCaseWithName: "SimulateSelectedTests_TestCase/example1")
         expect(suite.tests).to(haveCount(1))
-        expect(suite.tests).to(allPass { $0.name.contains("example1") == true })
+        expect(suite.tests).to(allPass { $0?.name.contains("example1") == true })
+    }
+
+    func testNonQuickSpecRequestingNoTestCase() {
+        let suite = XCTestSuite(forTestCaseWithName: "SimulateNotQuickSpec_TestCase")
+        expect(suite.tests).to(haveCount(2))
+    }
+
+    func testNonQuickSpecRequestingOneTestCase() {
+        let suite = XCTestSuite(forTestCaseWithName: "SimulateNotQuickSpec_TestCase/testAnyTestExists")
+        expect(suite.tests).to(haveCount(1))
+        expect(suite.tests).to(allPass { $0?.name.contains("testAnyTestExists") == true })
     }
 }
 

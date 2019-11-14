@@ -32,6 +32,10 @@ public class QuickTestSuite: XCTestSuite {
 
     private static var builtTestSuites: Set<String> = Set()
 
+    internal class func clearBuiltTestSuites() {
+        builtTestSuites = Set()
+    }
+
     /**
      Construct a test suite for a specific, selected subset of tests and test cases (rather
      than the default, which as all test cases).

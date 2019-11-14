@@ -39,8 +39,8 @@
     FooSpec/testBar
  */
 + (nullable instancetype)qck_hooked_testSuiteForTestCaseWithName:(nonnull NSString *)name {
-    NSArray<NSString *> *components = [name componentsSeparatedByString:@"/"];
-    return [QuickTestSuite selectedTestSuiteForTestCaseWithName:[components firstObject] testName:[components count] > 1 ? [components lastObject] : nil];
+    // If the desired test case is a Quick case, create the suite, otherwise use the non-swizzled version of this method.
+    return [QuickTestSuite selectedTestSuiteForTestCaseWithName:name] ?: [self qck_hooked_testSuiteForTestCaseWithName:name];
 }
 
 @end
