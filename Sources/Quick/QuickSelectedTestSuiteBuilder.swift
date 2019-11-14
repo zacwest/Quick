@@ -64,13 +64,11 @@ private func testCaseClassForTestCaseWithName(_ name: String) -> AnyClass? {
     guard let className = extractClassName(name) else { return nil }
     guard let bundle = Bundle.currentTestBundle else { return nil }
 
-    if let testCaseClass = bundle.classNamed(className) { return testCaseClass }
-
     let moduleName = bundle.moduleName
+    let testCaseClass: AnyClass? = bundle.classNamed(className) ?? NSClassFromString("\(moduleName).\(className)")
 
-    if let classType = NSClassFromString("\(moduleName).\(className)"), classType is QuickSpec.Type {
-        // Only provide QuickSpec subclasses as valid test classes, or we override Xcode behavior for selected tests
-        return classType
+    if let testCaseClass = testCaseClass, testCaseClass is QuickSpec.Type {
+        return testCaseClass
     } else {
         return nil
     }
