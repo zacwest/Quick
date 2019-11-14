@@ -1,7 +1,7 @@
 #if canImport(Darwin) && !SWIFT_PACKAGE
 
 import Nimble
-import Quick
+@testable import Quick
 import XCTest
 
 // The regression tests for https://github.com/Quick/Quick/issues/891
@@ -28,8 +28,17 @@ class SimulareAllTests_TestCase: QuickSpec {
     }
 }
 
-class QuickSpec_SelectedTests: XCTestCase {
+class SimulateNotQuickSpec_TestCase: XCTestCase {
+    func testAnyTestExists() {
 
+    }
+
+    func testDifferentTestCase() {
+
+    }
+}
+
+class QuickSpec_SelectedTests: XCTestCase {
     func testQuickSpecTestInvocationsForAllTests() {
         // Simulate running 'All tests'
         let invocations = SimulareAllTests_TestCase.testInvocations
@@ -46,6 +55,21 @@ class QuickSpec_SelectedTests: XCTestCase {
 
         let selectorNames = invocations.map { $0.selector.description }
         expect(selectorNames).to(contain(["example1", "example2", "example3"]))
+    }
+
+    func testNotQuickSpecInvokesRequestedTestCase() {
+        guard let moduleName = Bundle.currentTestBundle?.moduleName else {
+            XCTFail("couldn't find module name-ful test bundle")
+            return
+        }
+
+        let nonQuickSuiteOnlyOne = XCTestSuite(forTestCaseWithName: "\(moduleName).SimulateNotQuickSpec_TestCase/testAnyTestExists")
+        let nonQuickSuiteAll = XCTestSuite(forTestCaseWithName: "\(moduleName).SimulateNotQuickSpec_TestCase")
+        let quickSuite = XCTestSuite(forTestCaseWithName: "\(moduleName).SimulateSelectedTests_TestCase")
+
+        expect(nonQuickSuiteOnlyOne.tests).to(haveCount(1), description: "we only ask for one test case to be run")
+        expect(nonQuickSuiteAll.tests).to(haveCount(2), description: "we ask for all to be run")
+        expect(quickSuite.tests).toNot(beEmpty())
     }
 }
 
