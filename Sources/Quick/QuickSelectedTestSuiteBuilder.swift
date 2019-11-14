@@ -68,7 +68,12 @@ private func testCaseClassForTestCaseWithName(_ name: String) -> AnyClass? {
 
     let moduleName = bundle.moduleName
 
-    return NSClassFromString("\(moduleName).\(className)")
+    if let classType = NSClassFromString("\(moduleName).\(className)"), classType is QuickSpec.Type {
+        // Only provide QuickSpec subclasses as valid test classes, or we override Xcode behavior for selected tests
+        return classType
+    } else {
+        return nil
+    }
 }
 
 #endif
