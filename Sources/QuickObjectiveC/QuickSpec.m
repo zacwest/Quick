@@ -15,6 +15,13 @@ static QuickSpec *currentSpec = nil;
 
 @implementation QuickSpec
 
++ (void)initialize
+{
+    // NOTE: (zacw, 2021-09-22) xctool runs these classes without allowing QuickTestObservation to build examples
+    // so we need to do this manually here, or alter xctool to invoke this
+    [self buildExamplesIfNeeded];
+}
+
 #pragma mark - XCTestCase Overrides
 
 /**
