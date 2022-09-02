@@ -53,8 +53,8 @@ public class QuickTestSuite: XCTestSuite {
      - Returns: A valid test case (if tests were added to the test suite to run), or nil (if tests were not added to the test suite to run)
      */
     @objc
-    public static func selectedTestSuite(forTestCaseWithName name: String) -> QuickTestSuite? {
-        guard let builder = QuickSelectedTestSuiteBuilder(forTestCaseWithName: name) else { return nil }
+    public static func selectedTestSuite(forTestCaseWithName name: String, testName: String?) -> QuickTestSuite? {
+        guard let builder = QuickSelectedTestSuiteBuilder(forTestCaseWithName: name, testName: testName) else { return nil }
 
         let (inserted, _) = builtTestSuites.insert(builder.testSuiteClassName)
         if inserted {
