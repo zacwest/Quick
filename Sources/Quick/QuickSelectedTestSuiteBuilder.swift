@@ -44,7 +44,7 @@ internal class QuickSelectedTestSuiteBuilder: QuickTestSuiteBuilder {
         }
 
         self.testCaseClass = testCaseClass
-        self.testName = testNameForTestCaseWithName(name)
+        self.testName = testNameForTestCaseName(name, testName: testName)
     }
 
     /**
@@ -56,7 +56,7 @@ internal class QuickSelectedTestSuiteBuilder: QuickTestSuiteBuilder {
         if let testName = testName {
             let filteredSuite = QuickTestSuite(name: suite.name)
             // test names are in the format "-[ClassName testName]"
-            for test in suite.tests.filter({ $0.name.hasSuffix(" \(testName)]") }) {
+            for test in suite.tests.filter({ $0.name == testName }) {
                 filteredSuite.addTest(test)
             }
             return filteredSuite
@@ -75,26 +75,16 @@ internal class QuickSelectedTestSuiteBuilder: QuickTestSuiteBuilder {
 private func testCaseClassForTestCaseWithName(_ name: String) -> AnyClass? {
     guard let bundle = Bundle.currentTestBundle else { return nil }
 
-    let moduleName = bundle.moduleName
-    let testCaseClass: AnyClass? = bundle.classNamed(className) ?? NSClassFromString("\(moduleName).\(className)")
+    if let testCaseClass = bundle.classNamed(name) { return testCaseClass }
 
-    if let testCaseClass = testCaseClass, testCaseClass is QuickSpec.Type {
-        return testCaseClass
-    } else {
-        return nil
-    }
+    let moduleName = bundle.moduleName
+
+    return NSClassFromString("\(moduleName).\(name)")
 }
 
-/**
- Pulls out the test name, if there is any.
- */
-private func testNameForTestCaseWithName(_ name: String) -> String? {
-    let components = name.components(separatedBy: "/")
-    if components.count > 1 {
-        return components[1]
-    } else {
-        return nil
-    }
+private func testNameForTestCaseName(_ testCaseName: String, testName: String?) -> String? {
+    guard let testName = testName else { return nil }
+    return "-[\(testCaseName) \(testName)]"
 }
 
 #endif
