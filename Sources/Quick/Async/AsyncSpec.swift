@@ -76,12 +76,18 @@ open class AsyncSpec: XCTestCase {
         }
         let implementation = imp_implementationWithBlock(block as Any)
 
-        let originalName = "test \(example.name)"
+        var originalName = "test \(example.name)"
+        // DROPBOX SPECIAL TEST NAMING SCHEME
+        // This mimicks QuickSpec.m historical naming
+        // `buck test`/xctool cannot deal with spaces
+        originalName = String(originalName.components(separatedBy: ", ").joined(separator: "_"))
+        originalName = String(originalName.components(separatedBy: CharacterSet.whitespaces).joined(separator: "_"))
+
         var selectorName = originalName
         var index: UInt = 2
 
         while selectorNames.contains(selectorName) {
-            selectorName = String(format: "%@ (%tu)", originalName, index)
+            selectorName = String(format: "%@_(%tu)", originalName, index)
             index += 1
         }
 
