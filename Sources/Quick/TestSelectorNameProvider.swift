@@ -19,7 +19,7 @@ import Foundation
     }
 
     internal static var useLegacyStyleTestSelectorNames: Bool = {
-        ProcessInfo.processInfo.environment["QUICK_USE_ENCODED_TEST_SELECTOR_NAMES"] != nil
+        true
     }()
 
     private static func legacyStyleTestSelectorName(exampleName: String, classSelectorNames selectorNames: Set<String>, isAsync: Bool) -> String {
